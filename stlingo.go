@@ -159,12 +159,7 @@ func readInputTxt() ([]string, error) {
 	return results, nil
 }
 
-func main() {
-	files, err := readInputTxt()
-	if err != nil {
-		panic(err)
-	}
-
+func mapFileInfos(files []string) []FileInfo {
 	var fileInfos []FileInfo
 	fmt.Printf(",index, platformType, hash, filePath\n")
 	rxml := regexp.MustCompile(`.*?\.xml`)
@@ -186,6 +181,16 @@ func main() {
 		fmt.Printf(", %d, %v, %s, %s\n", index, platformType, hash, filePath)
 	}
 	fmt.Printf("\n\n")
+	return fileInfos
+}
+
+func main() {
+	files, err := readInputTxt()
+	if err != nil {
+		panic(err)
+	}
+
+	fileInfos := mapFileInfos(files)
 
 	results, err := parseFiles(fileInfos)
 	if err != nil {
