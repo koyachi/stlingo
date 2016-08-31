@@ -26,7 +26,7 @@ type FileInfo struct {
 	PlatformType PlatformType
 }
 
-type LocalizableStringRaw struct {
+type StringLine struct {
 	FileInfo FileInfo
 	Line     int
 	Key      string
@@ -34,7 +34,7 @@ type LocalizableStringRaw struct {
 	Checked  bool
 }
 
-type MatchedResults []*LocalizableStringRaw
+type MatchedResults []*StringLine
 
 func (m MatchedResults) Len() int {
 	return len(m)
@@ -52,24 +52,23 @@ func (m MatchedResults) Less(i, j int) bool {
 	}
 }
 
-// TODO:名前変える
-type LSRForSort struct {
-	LSR   *LocalizableStringRaw
+type ScoredStringLine struct {
+	*StringLine
 	Score int
 	Index int
 }
 
-type LSRForSortList []LSRForSort
+type ScoredStringLineList []ScoredStringLine
 
-func (l LSRForSortList) Len() int {
+func (l ScoredStringLineList) Len() int {
 	return len(l)
 }
 
-func (l LSRForSortList) Swap(i, j int) {
+func (l ScoredStringLineList) Swap(i, j int) {
 	l[i], l[j] = l[j], l[i]
 }
 
-func (l LSRForSortList) Less(i, j int) bool {
+func (l ScoredStringLineList) Less(i, j int) bool {
 	return l[i].Score < l[j].Score
 }
 
@@ -89,15 +88,15 @@ func analyze(matchedData MatchedResults, diffScore int) error {
 
 		fmt.Printf(",%v,X,%s,%s,%d,%s\n", lineDataI.FileInfo.PlatformType, quote(lineDataI.Value), lineDataI.Key, lineDataI.Line, lineDataI.FileInfo.FilePath)
 
-		var scores LSRForSortList
+		var scores ScoredStringLineList
 		for j := i + 1; j < len(matchedData); j++ {
 			lineDataJ := matchedData[j]
 
 			score := verbo.Levenshtein(lineDataI.Value, lineDataJ.Value)
-			scores = append(scores, LSRForSort{
-				LSR:   lineDataJ,
-				Score: score,
-				Index: j,
+			scores = append(scores, ScoredStringLine{
+				StringLine: lineDataJ,
+				Score:      score,
+				Index:      j,
 			})
 		}
 		//sort.Sort(sort.Reverse(scores))
@@ -107,7 +106,7 @@ func analyze(matchedData MatchedResults, diffScore int) error {
 			if item.Score > diffScore {
 				break
 			}
-			if item.LSR.Checked == true {
+			if item.StringLine.Checked == true {
 				continue
 			}
 
@@ -115,7 +114,7 @@ func analyze(matchedData MatchedResults, diffScore int) error {
 				matchedData[item.Index].Checked = true
 			}
 
-			fmt.Printf(",%v,%d,%s,%s,%d,%d\n", item.LSR.FileInfo.PlatformType, item.Score, quote(item.LSR.Value), item.LSR.Key, item.LSR.Line, item.LSR.FileInfo.Index)
+			fmt.Printf(",%v,%d,%s,%s,%d,%d\n", item.StringLine.FileInfo.PlatformType, item.Score, quote(item.StringLine.Value), item.StringLine.Key, item.StringLine.Line, item.StringLine.FileInfo.Index)
 		}
 	}
 
@@ -199,8 +198,8 @@ func main() {
 
 	var flattenMatchedResults MatchedResults
 	for _, matchedResults := range results {
-		for _, localizableStringRaw := range matchedResults {
-			flattenMatchedResults = append(flattenMatchedResults, localizableStringRaw)
+		for _, stringLine := range matchedResults {
+			flattenMatchedResults = append(flattenMatchedResults, stringLine)
 		}
 	}
 	sort.Sort(flattenMatchedResults)

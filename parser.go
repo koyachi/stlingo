@@ -38,7 +38,7 @@ func parseIOS(fileInfo FileInfo) (MatchedResults, error) {
 		}
 		h := md5.New()
 		io.WriteString(h, fileInfo.FilePath)
-		lineData := &LocalizableStringRaw{
+		lineData := &StringLine{
 			FileInfo: fileInfo,
 			Line:     i,
 			Key:      results[0][1],
@@ -89,7 +89,7 @@ func parseAndroid(fileInfo FileInfo) (MatchedResults, error) {
 		return nil, err
 	}
 	for _, str := range androidStringRoot.Strings {
-		lineData := &LocalizableStringRaw{
+		lineData := &StringLine{
 			FileInfo: fileInfo,
 			Key:      str.Name,
 			Value:    str.Value,
@@ -99,7 +99,7 @@ func parseAndroid(fileInfo FileInfo) (MatchedResults, error) {
 	}
 	for _, strArray := range androidStringRoot.StringsArray {
 		for itemIndex, item := range strArray.Items {
-			lineData := &LocalizableStringRaw{
+			lineData := &StringLine{
 				FileInfo: fileInfo,
 				Key:      strArray.Name + "." + strconv.Itoa(itemIndex),
 				Value:    item,
