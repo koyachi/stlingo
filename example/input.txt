@@ -1,0 +1,3 @@
+// comment
+./example/android_strings.xml
+./example/ios_Localizable.strings

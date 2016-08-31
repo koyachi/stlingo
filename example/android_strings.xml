@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="foo">bar</string>
+  <string name="foo1">baz</string>
+  <string name="android_label_1">入力エラー</string>
+  <string name="android_label_2">入力</string>
+  <string-array name="android_label_3">
+    <item>文字を入力</item>
+    <item>文字を削除</item>
+  </string-array>
+</resources>

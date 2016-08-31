@@ -7,6 +7,7 @@ import (
 	"github.com/ararog/verbo"
 	"io"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -153,7 +154,11 @@ func readInputTxt() ([]string, error) {
 		if rs.MatchString(s) {
 			continue
 		}
-		results = append(results, s)
+		fullPath, err := filepath.Abs(s)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, fullPath)
 	}
 	return results, nil
 }
