@@ -4,13 +4,17 @@ Collect similar strings in Android's strings.xml and iOS's Localizable.strings f
 
 ## Install
 
- $ go install github.com/koyachi/stlingo
+```
+go install github.com/koyachi/stlingo
+```
 
 ## Usage
 
-  $ stlingo /path/to/in.txt > /path/to/out.csv
+```
+$ stlingo /path/to/in.txt > /path/to/out.csv
+```
 
-## in.txt format
+## example in.txt
 
 ```
 // comment
